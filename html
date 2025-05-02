@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Translator</title>
+    <style>
+        * {
+            margin: 3px;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background :yellow;
+            text-align: center;
+            padding: 20px;
+        }
+        .aa {
+            width: 90%;
+            margin: auto;
+            background: whitesmoke;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px black;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-size: 50px;
+            color: black;
+            text-shadow: 2px 2px 4px whitesmoke;
+        }
+        .translator {
+            display: flex;
+            justify-content: space-between;
+            gap: 50px; 
+        }
+        .box {
+            width: 60%;
+            padding: 20px;
+            border: 1px solid rgb(7, 8, 7);
+            border-radius: 5px;
+            box-shadow: 0 0 20px black;
+            background-color: rgb(231, 231, 49);
+        }
+        textarea {
+            width: 100%;
+            height: 500px;
+            border: 1px solid rgb(8, 7, 5);
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid rgb(255, 255, 255);
+            font-size: 16px;
+        }
+        button {
+            background: rgb(5, 238, 55);
+            color: black;
+            font-size: 18px;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: rgb(1, 68, 10);
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Translate function when button is clicked
+            $("button").click(function() {
+                var text = $("textarea:first").val();
+                var targetLang = $("select").val();
+
+                if (targetLang === "select language") {
+                    alert("Please select a target language!");
+                    return;
+                }
+
+                $.ajax({
+                    url: '/translate',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        text: text,
+                        sourceLang: "en",  // English is the source language
+                        targetLang: targetLang
+                    }),
+                    success: function(response) {
+                        // Show translated text in second textarea
+                        $("textarea:last").val(response.translatedText);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Translation error:', error);
+                        alert('Enter valid text');
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Language Translator</h1>
+    <div class="aa">
+        <div class="translator">
+            <div class="box">
+                <h3>English</h3>
+                <textarea placeholder="Enter text in English"></textarea>
+            </div>
+            <div class="box">
+                <h3>Other Indian Languages</h3>
+                <select>
+                    <option value="select language">Select Language</option>
+                    <option value="bn">Bengali</option>
+                    <option value="gu">Gujarati</option>
+                    <option value="hi">Hindi</option>
+                    <option value="kn">Kannada</option>
+                    <option value="ml">Malayalam</option>
+                    <option value="mr">Marathi</option>
+                    <option value="pa">Punjabi</option>
+                    <option value="ta">Tamil</option>
+                    <option value="te">Telugu</option>
+                    <option value="ur">Urdu</option>
+                </select>
+                <textarea placeholder="Translation" readonly></textarea>
+            </div>
+        </div>
+        <button type="button">Translate</button>
+    </div>
+</body>
+</html>
